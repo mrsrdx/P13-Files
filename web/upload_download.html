@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>File Upload and Download</title>
+<style>body{font:18px Arial,sans-serif;max-width:900px;margin:40px auto;padding:20px}input,select,button{font:inherit;margin:6px;padding:6px}table{border-collapse:collapse}th,td{border:1px solid #aaa;padding:10px}[hidden]{display:none}</style>
+</head><body><h1>File upload and download</h1><label>Upload <input type="file" id="uploadFile"></label>
+<button id="choose" onclick="document.getElementById('uploadFile').click()">Choose using dialog</button>
+<p id="uploadStatus"></p><button id="downloadButton" disabled>Download uploaded file</button>
+<script>
+let file;
+document.getElementById('uploadFile').onchange = async event => {
+ file = event.target.files[0];
+ if (!file) return;
+ await file.arrayBuffer();
+ document.getElementById('uploadStatus').textContent = 'File uploaded successfully: ' + file.name;
+ document.getElementById('downloadButton').disabled = false;
+};
+document.getElementById('downloadButton').onclick = () => {
+ const url = URL.createObjectURL(file);
+ const link = document.createElement('a'); link.href = url; link.download = file.name;
+ document.body.appendChild(link); link.click(); link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url), 10000);
+};
+</script></body></html>
